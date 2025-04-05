@@ -17,6 +17,7 @@ variables:
   PackageVersion: '$(Major).$(Minor).$(Patch)'
   dotNetVersion: '8.0.x'
   projectPath: 'lab-04/lab-04.csproj'
+  feedName: 'Lab4Feed'  # ← Must match the feed you created
 
 steps:
 # Install .NET 8 SDK
@@ -50,19 +51,20 @@ steps:
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'PackageVersion'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    nobuild: true
 
 # Authenticate with Azure Artifacts
 - task: NuGetAuthenticate@1
   displayName: 'Authenticate with Azure Artifacts'
 
-# Push package to feed (UPDATED FEED REFERENCE)
+# Push package to newly created feed
 - task: NuGetCommand@2
   displayName: 'Push'
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'StringExtensionsPackages'  # Simplified feed name
+    publishVstsFeed: 'Lab4Feed' 
     allowPackageConflicts: true
 
 # Publish build artifacts
