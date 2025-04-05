@@ -10,25 +10,66 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  Major: '1'
+  Minor: '0'
+  Patch: '0'
+  PackageVersion: '$(Major).$(Minor).$(Patch)'
+  dotNetVersion: '8.0.x'
+  projectPath: 'lab-04/lab-04.csproj'
 
 steps:
-- task: NuGetToolInstaller@1
+# Install .NET 8 SDK
+- task: UseDotNet@2
+  displayName: 'Install .NET 8 SDK'
+  inputs:
+    version: '$(dotNetVersion)'
+    packageType: 'sdk'
 
+# Restore packages
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
+  inputs:
+    command: 'restore'
+    projects: '$(projectPath)'
+    feedsToUse: 'select'
+    vstsFeed: 'StringExtensions/StringExtensionsPackages'
+
+# Build solution
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '$(projectPath)'
+    arguments: '--configuration $(buildConfiguration)'
+
+# Create NuGet package
+- task: DotNetCoreCLI@2
+  displayName: 'Pack'
+  inputs:
+    command: 'pack'
+    packagesToPack: '$(projectPath)'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'PackageVersion'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+# Authenticate with Azure Artifacts
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate with Azure Artifacts'
+
+# Push package to feed
 - task: NuGetCommand@2
+  displayName: 'Push'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'StringExtensions/StringExtensionsPackages'
+    allowPackageConflicts: true
 
-- task: VSBuild@1
+# Publish build artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'

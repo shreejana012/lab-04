@@ -1,4 +1,23 @@
 ﻿<Properties>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.lab-04 FirstBuild="True" />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="lab-04/StringExtensions.cs">
+    <Files>
+      <File FileName="lab-04/Class1.cs" Line="14" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="lab-04" expanded="True">
+            <Node name="lab-04" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
 </Properties>
