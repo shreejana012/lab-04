@@ -63,7 +63,7 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'Lab4Feed1' 
+    publishVstsFeed: 'string-utilities-project/Lab4Feed2' 
     allowPackageConflicts: true
 
 # Publish build artifacts
