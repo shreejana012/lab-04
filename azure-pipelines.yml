@@ -58,13 +58,11 @@ steps:
 
 # Push package to newly created feed
 - task: NuGetCommand@2
-  displayName: 'Push'
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'string-utilities-project/Lab4Feed2' 
-    allowPackageConflicts: true
+    publishVstsFeed: 'bf41e46b-d554-46c8-bdc6-42f3f6032ed5/8c6be756-1fb6-49e3-a079-58c9d306698a'
 
 # Publish build artifacts
 - task: PublishBuildArtifacts@1
